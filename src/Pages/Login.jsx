@@ -1,16 +1,21 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUserContext } from '../Context/UserProvider'
+import { erroresFirebase } from '../Utils/erroresFirebase'
 import { auth, login } from '../firebase'
+import { FormValidate } from '../Utils/FormValidate'
+import FormInput from '../Components/FormInput'
+import FormError from '../Components/FormError'
 
 const Login = () => {
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  const {user} = useUserContext( )
+  const {user} = useUserContext()
   const navigate = useNavigate()
+  const {register, handleSubmit, formState:{errors}, setError} = useForm()
+  const { required, patternEmail, minLength,validateTrim}=FormValidate()
+
 
   const loginGoogle = async()=>{
     try {
@@ -29,16 +34,17 @@ const Login = () => {
 }, [user])
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      await login({email, password})
-      console.log('usuario logueado')
-    } catch (error) {
-      console.log('log',error)
-    }
-
+const onSubmit = async({email, password}) => {
+  try {
+    await login(email, password)
+  } catch (error) {
+    console.log(error.code)
+    setError("firebase",{
+      message:erroresFirebase(error.code)
+    })
   }
+}
+
 
 
   return (
@@ -46,24 +52,29 @@ const Login = () => {
       <h2 className='font-bold text-xl text-center border-b-2 mb-8'>Login</h2>
       <form 
         className='grid grid-cols-2 gap-2 mb-4'
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         >
+      <FormError error={errors.firebase}/>
           <label >Correo electronico</label>
-          <input 
-            className='bg-transparent px-4 py-1 w-11/12 m-auto col-span-2'
+          <FormInput
             type="email"
             placeholder='email'
-            value={email}
-            onChange={e=>setEmail(e.target.value)}
-          />
+            {...register("email", {
+              required: required,
+              pattern: patternEmail,
+            })}>           
+          </FormInput>
           <label >Password</label>
-          <input 
-            className='bg-transparent px-4 py-1 w-11/12 m-auto col-span-2 mb-4'
+          <FormInput
             type="password"
             placeholder='password'
-            value={password}
-            onChange={e=>setPassword(e.target.value)}
+            {...register("password", 
+              {minLength,
+              validate: validateTrim,
+              required
+            })}
           />
+            <FormError error={errors.password}/> 
           <button className=' border-2  col-span-2 rounded-xl hover:scale-105   ease-in py-1 px-3 duration-500' type='submit'>Acceder</button>
       </form>
           <button onClick={loginGoogle} className='mb-4 border-2 rounded-xl hover:scale-105  w-full  ease-in py-1 px-3 duration-500'>Acceder con Google</button>
