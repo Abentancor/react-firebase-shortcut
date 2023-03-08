@@ -13,7 +13,7 @@ const Navbar = () => {
     <div className='  text-white p-2  tracking-widest flex justify-around px-6  items-end'>
         <div className='font-bold text-xl uppercase'>
             <h1 className=" hover:scale-110 ease-in duration-500 p-1">
-                <Link  to='/'>Titulo</Link>
+                <Link  to='/'>URLShortCuts</Link>
             </h1>
         </div>
         <div className='flex gap-6'>

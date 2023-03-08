@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { set, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import FormError from '../Components/FormError'
 import FormInput from '../Components/FormInput'
 import { useUserContext } from '../Context/UserProvider'
@@ -12,6 +12,7 @@ const Register = () => {
 
 
   const {user} = useUserContext()
+  const navigate = useNavigate()
 
   const {register, handleSubmit, formState:{errors}, getValues, setError} = useForm()
 
@@ -74,7 +75,7 @@ const Register = () => {
             placeholder='vuelva a escribir su password'
             {...register("repassword", 
               {required,
-               validate:validateEquals(validateEquals)
+               validate:validateEquals(getValues)
           })}/>
           <FormError error={errors.repassword}/>
 

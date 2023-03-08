@@ -34,11 +34,11 @@ const Login = () => {
 }, [user])
 
 
-const onSubmit = async({email, password}) => {
+
+const onSubmit = async(email, password) => {
   try {
     await login(email, password)
   } catch (error) {
-    console.log(error.code)
     setError("firebase",{
       message:erroresFirebase(error.code)
     })
@@ -64,6 +64,7 @@ const onSubmit = async({email, password}) => {
               pattern: patternEmail,
             })}>           
           </FormInput>
+          <FormError error={errors.email}/> 
           <label >Password</label>
           <FormInput
             type="password"
