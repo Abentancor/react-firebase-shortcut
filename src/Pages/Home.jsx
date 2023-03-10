@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import FormError from '../Components/FormError'
+import FormInput from '../Components/FormInput'
 import { useFirestore } from '../Hooks/useFirestor'
+import { erroresFirebase } from '../Utils/erroresFirebase'
+import { FormValidate } from '../Utils/FormValidate'
+
 
 const Home = () => {
-
+  
+  const {register, handleSubmit, formState:{errors}, setError, resetField, setValue} = useForm()
+  const { required,patternURL, minLength, validateTrim}=FormValidate()
   const {data, error, loading, getData, addData, deleteData, updateData} = useFirestore()
-  const [text, setText] = useState('')
   const [newOrigin, setNewOrigin] = useState()
 
-
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    if(newOrigin){
-      await updateData(newOrigin, text)
-      setNewOrigin('')
-      setText('')
-      return
+  const [copy, setCopy] = useState({})
+ 
+  const onSubmit = async ({ url }) => {
+    try {
+      if (newOrigin) {
+        await updateData(newOrigin, url);
+      } else {
+        await addData(url);
+      }
+      setNewOrigin("");
+    } catch (error) {
+      const { code, message } = erroresFirebase(error.code);
+      setError(code, { message });
+    }finally{
+      resetField("url");
     }
-    await addData(text)
-    setText('')
-  }
+  };
+
 
   const handleClickDelete = async nanoid => {
     await deleteData(nanoid)
@@ -27,10 +40,16 @@ const Home = () => {
     
   const handleClickEdit = (item) => {
     console.log('click edit')
-    setText(item.origin)
+
+    setValue(item.origin)
     setNewOrigin(item.nanoid)
   }
 
+  const handleClickCopy = async(nanoid)=>{
+    await navigator.clipboard.writeText(window.location.href + nanoid)
+    console.log('copiado')
+    setCopy(prev => ({[nanoid]: true}))
+  }
 
   useEffect(()=>{
     getData()
@@ -40,36 +59,44 @@ const Home = () => {
   if(loading.getData) return <p>Loading data...</p>
   if(error) return <p>{error}</p>
 
+  const pathURL = window.location.href
+
   return (
     <>
     <div className='mb-8 text-2xl font-bold'>Home</div>
 
 
-    <form onSubmit={handleSubmit}    className=' mb-4'>
-      
-      <input 
-        className='bg-transparent px-4 py-1 m-auto mb-4'
-        placeholder='https:www.suURL.com'
-        type="text"
-        value={text}
-        onChange={e => setText(e.target.value)}
-       />
+    <form onSubmit={handleSubmit(onSubmit)} className='grid mb-4'>
+    <label className='mb-4 text-2xl w-full text-center col-span-2'>url</label>
+    <FormInput
+          label="Ingresa URL"
+          placeholder="https://tuWebPorEjemplo.com"
+          {...register("url", {
+            required,
+            pattern: patternURL,
+          })}
+          error={errors.url}
+        >
+          <FormError error={errors.url} />
+        </FormInput>
+        <FormError error={errors.url}/> 
+
        {
         newOrigin ? (
-          <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full   ease-in py-1 px-3 duration-500'  type='submit'>Editar URL</button>
+          <button  className='col-span-2 border-2  mb-4 rounded-xl hover:scale-105 w-full   ease-in py-1 px-3 duration-500'  type='submit'>Editar URL</button>
         ):(
-          <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full   ease-in py-1 px-3 duration-500'  type='submit'>Agregar URL</button>
+          <button  className='col-span-2 border-2  mb-4 rounded-xl hover:scale-105 w-full   ease-in py-1 px-3 duration-500'  type='submit'>Agregar URL</button>
         )
        }
     </form>
       {
         data.map(item =>(
-          <div className='grid grid-cols-2 gap-3 mb-2' key={item.nanoid}>
-            <p className='col-span-2'>{item.nanoid}</p>
-            <p className='col-span-2'>{item.origin}</p>
-            <p className='col-span-2 mb-2'>{item.uid}</p>
-            <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full   ease-in py-1 px-3 duration-500' onClick={()=>handleClickEdit(item)} >Editar URL</button>
-            <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full   ease-in py-1 px-3 duration-500' onClick={()=>handleClickDelete(item.nanoid)} >Eliminar URL</button>
+          <div className='grid grid-cols-3 gap-3 mb-8' key={item.nanoid}>
+            <p className='col-span-3 text-2xl font-bold'>{pathURL}{item.nanoid}</p>
+            <p className='col-span-3'>{item.origin}</p>
+            <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full hover:backdrop-brightness-75   ease-in py-1 px-3 duration-500' onClick={()=>handleClickDelete(item.nanoid)} >Eliminar URL</button>
+            <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full hover:backdrop-brightness-75  ease-in py-1 px-3 duration-500' onClick={()=>handleClickEdit(item)} >Editar URL</button>
+            <button  className=' border-2  mb-4 rounded-xl hover:scale-105 w-full hover:backdrop-brightness-75   ease-in py-1 px-3 duration-500' onClick={()=>handleClickCopy(item.nanoid)} >{copy[item.nanoid] ? "Copiado" : "Copiar URL"}</button> 
           </div>
         ))
       }

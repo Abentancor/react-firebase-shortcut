@@ -7,6 +7,7 @@ import Home from "../Pages/Home";
 import Login from "../Pages/Login";
 import Register from "../Pages/Register";
 import Dashboard from "../Pages/Dashboard";
+import Redirect from "../Pages/Redirect";
 
 export const router = createBrowserRouter([{
     path:'/',
@@ -20,9 +21,13 @@ export const router = createBrowserRouter([{
             path:'/login',
             element:<Login/>,
         },
-        {
+       {
             path:'/register',
-            element:<Register/>,
+             element:<Register/>,
+        },
+        {
+            path:'/:nanoid',
+             element:<Redirect/>,
         },
         {
             path:'/dashboard',

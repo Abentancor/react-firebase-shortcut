@@ -79,9 +79,9 @@ const Register = () => {
           })}/>
           <FormError error={errors.repassword}/>
 
-          <button className=' border-2  mb-4 rounded-xl hover:scale-105 w-full col-span-2  ease-in py-1 px-3 duration-500' type="submit">Register</button>
+          <button className=' border-2 hover:backdrop-brightness-75  mb-4 rounded-xl hover:scale-105 w-full col-span-2  ease-in py-1 px-3 duration-500' type="submit">Register</button>
       </form>
-          <button className=' mb-4 border-2  rounded-xl hover:scale-105  w-full  ease-in py-1 px-3 duration-500'>Acceder con Google</button>
+          <button className=' mb-4 border-2 hover:backdrop-brightness-75  rounded-xl hover:scale-105  w-full  ease-in py-1 px-3 duration-500'>Acceder con Google</button>
           <div className="text-end">
             <Link className='text-xs mb-4 rounded-xl hover:scale-105 ease-in py-1 px-3 duration-500' to='/login'>Ya tienes usuario</Link>
           </div>

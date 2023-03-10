@@ -4,7 +4,7 @@ import Navbar from '../Components/Navbar'
 
 const LayoutPublic = () => {
   return (
-    <div className='font-roboto bg-gradient-to-br from-red-700 via-pink-900 p-6 to-rose-900 text-white'>
+    <div className='font-roboto bg-gradient-to-br from-rose-900 via-pink-700 to-rose-900 p-6 text-white'>
         <header className='mb-8 '>
             <Navbar/>
         </header>

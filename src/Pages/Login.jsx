@@ -76,9 +76,9 @@ const onSubmit = async(email, password) => {
             })}
           />
             <FormError error={errors.password}/> 
-          <button className=' border-2  col-span-2 rounded-xl hover:scale-105   ease-in py-1 px-3 duration-500' type='submit'>Acceder</button>
+          <button className=' border-2 hover:backdrop-brightness-75  col-span-2 rounded-xl hover:scale-105   ease-in py-1 px-3 duration-500' type='submit'>Acceder</button>
       </form>
-          <button onClick={loginGoogle} className='mb-4 border-2 rounded-xl hover:scale-105  w-full  ease-in py-1 px-3 duration-500'>Acceder con Google</button>
+          <button onClick={loginGoogle} className='mb-4 border-2 rounded-xl hover:scale-105 hover:backdrop-brightness-75   w-full  ease-in py-1 px-3 duration-500'>Acceder con Google</button>
           <div className="text-end">
             <Link className='text-xs mb-4 rounded-xl hover:scale-105 ease-in py-1 px-3 duration-500' to='/register'>Crea tu Cuenta</Link>
           </div>

@@ -1,10 +1,10 @@
 import React, { forwardRef } from 'react'
 
-const FormInput = forwardRef(({type, placeholder, onBlur, onChange, name}, ref) => {
+const FormInput = forwardRef(({type, placeholder, onBlur, onChange, name, children}, ref) => {
   return (
     <>
         <input 
-            className='bg-transparent px-4 py-1 w-11/12 m-auto col-span-2'
+            className='bg-transparent px-5 py-2 w-full m-auto col-span-2 mb-4 border-2  rounded-xl'
             type={type}
             placeholder={placeholder}
             ref={ref}
@@ -12,6 +12,7 @@ const FormInput = forwardRef(({type, placeholder, onBlur, onChange, name}, ref) 
             onChange={onChange}
             name={name}
           />
+        {children}
     </>
   )
 })

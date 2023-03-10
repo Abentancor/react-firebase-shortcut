@@ -1,8 +1,8 @@
-import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore"
 import { useState } from "react"
 import { auth, db } from "../firebase"
 import { nanoid } from "nanoid"
-import { async } from "@firebase/util"
+
 
 
 
@@ -36,7 +36,7 @@ const addData = async (url) => {
     try {
         setLoading(prev=>({...prev, getData:true,}));
         const newDoc = {
-            nanoid:    nanoid(6),
+            nanoid: nanoid(6),
             origin: url, 
             uid:auth.currentUser.uid
         }
@@ -74,10 +74,23 @@ const addData = async (url) => {
         } catch (error) {
             
         }finally{
-            setLoading(prev=>({...prev, updateData:true,}));
+            setLoading(prev=>({...prev, updateData:false,}));
+        }
+    }
+
+    const searchData = async(nanoid)=>{
+        try {
+            const docRef = doc(db, 'urls', nanoid)
+            const docSnap = await getDoc(docRef)
+            return docSnap
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+        }finally{
+
         }
     }
 
 
-  return { data, error, loading, getData, addData, deleteData, updateData }
+  return { data, error, loading, getData, addData, deleteData, updateData, searchData }
 }
